@@ -1,0 +1,42 @@
+使用说明：
+    1.环境： php8.0+，redis
+    2.运行目录：public
+    3.程序设置路径/config/config.php
+    4.伪静态规则
+    location / {
+index index.php index.html;
+	if (!-e $request_filename)
+	{
+		rewrite ^/(.*)$ /index.php last;
+	}
+}
+
+--------------------------------------------------------------
+设置项说明：
+1. 页面缓存 (page_cache)
+启用缓存：enabled=true 时，所有页面内容缓存到Redis。
+缓存时间：ttl=604800（7天），单位秒。
+调试建议：开发环境可设为 enabled=false 关闭缓存。
+2. 访问控制 (access)
+蜘蛛模式：
+spider_mode=1：仅允许百度蜘蛛访问（需配合 baidu_spider_ips）。
+spider_mode=0：允许所有用户访问。
+黑名单模式：
+blacklist_mode=1：启用后，匹配 blacklist_ips 的IP会跳转至 error.html。
+示例：屏蔽IP段 123.45.67.x：
+php
+'blacklist_ips' => [
+    '/^123\.45\.67\./'
+]
+3. SEO配置 (site)
+动态标签：
+{keyword}：自动替换为实际关键词（需代码支持）。
+{digits=1}：生成随机数字（示例：(3分钟科普下)）。
+示例标题：
+php
+'titles' => [
+    '【盘点】{keyword} - 腾讯问卷',
+    '({digits=1}分钟科普下) {keyword} _哔哩哔哩_bilibili'
+]
+4. Redis多数据库
+（不懂别动）。
